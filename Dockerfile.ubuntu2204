@@ -1,5 +1,7 @@
 FROM ubuntu:22.04
-LABEL "author"="Sam Edwardes"
+LABEL author="Sam Edwardes"
+LABEL description="A base docker image for debugging."
+LABEL source="https://github.com/SamEdwardes/docker-shell"
 
 # Locale configuration d
 RUN apt-get update && apt-get install -y locales && localedef -i en_US -f UTF-8 en_US.UTF-8
@@ -48,5 +50,6 @@ RUN apt-get clean \
 COPY files/starship.toml /root/.config/starship.toml
 ENV PATH=/opt/python/"${PYTHON_VERSION}"/bin:/opt/R/"${R_VERSION}"/bin:$PATH
 RUN echo 'options(repos = c(REPO_NAME = "https://packagemanager.rstudio.com/cran/__linux__/jammy/latest"))' > /opt/R/${R_VERSION}/lib/R/etc/Rprofile.site
+WORKDIR /root
 
 CMD ["bash"]
