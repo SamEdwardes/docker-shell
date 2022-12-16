@@ -34,13 +34,12 @@ RUN curl -O https://cdn.rstudio.com/python/ubuntu-2204/pkgs/python-${PYTHON_VERS
 RUN curl -sS https://starship.rs/install.sh -o starship_installer.sh \
     && chmod +x starship_installer.sh \
     && ./starship_installer.sh --yes \
+    && echo 'eval "$(starship init bash)"' >> /root/.bashrc \
     && rm starship_installer.sh \
-    && rm -r /tmp/* \
-    && echo 'eval "$(starship init bash)"' >> /root/.bashrc
+    && rm -r /tmp/*
 
 # Install justfile
-RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/bin \
-    && echo 'PATH="$PATH:$HOME/bin"' >> /root/.bashrc 
+RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/bin
 
 # Clean up
 RUN apt-get clean \
@@ -48,7 +47,7 @@ RUN apt-get clean \
 
 # Configure
 COPY files/starship.toml /root/.config/starship.toml
-ENV PATH=/opt/python/"${PYTHON_VERSION}"/bin:/opt/R/"${R_VERSION}"/bin:$PATH
+ENV PATH=/opt/python/"${PYTHON_VERSION}"/bin:/opt/R/"${R_VERSION}"/bin:$HOME/bin:$PATH
 RUN echo 'options(repos = c(REPO_NAME = "https://packagemanager.rstudio.com/cran/__linux__/jammy/latest"))' > /opt/R/${R_VERSION}/lib/R/etc/Rprofile.site
 WORKDIR /root
 
