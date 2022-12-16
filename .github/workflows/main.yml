@@ -1,0 +1,30 @@
+name: CI to Docker hub 
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+
+        - name: Login to DockerHub
+          uses: docker/login-action@v1 
+          with:
+            username: ${{ secrets.DOCKER_HUB_USERNAME }}
+            password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+        - name: Build and push
+          id: docker_build
+          uses: docker/build-push-action@v2
+          with:
+            context: ./
+            file: ./Dockerfile.ubuntu2204
+            push: true
+            tags: samedwardes/shell:latest
+
+        - name: Image digest
+          run: echo ${{ steps.docker_build.outputs.digest }}
