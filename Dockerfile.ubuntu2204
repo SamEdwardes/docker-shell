@@ -1,0 +1,52 @@
+FROM ubuntu:22.04
+LABEL "author"="Sam Edwardes"
+
+# Locale configuration d
+RUN apt-get update && apt-get install -y locales && localedef -i en_US -f UTF-8 en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Install linux packages
+RUN apt-get update --fix-missing && apt-get install -y \
+    vim \
+    tree \
+    git \
+    gdebi-core \
+    curl
+
+# Install R
+ARG R_VERSION=4.2.2
+RUN curl -O https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION}_1_amd64.deb \
+    && gdebi -n r-${R_VERSION}_1_amd64.deb \
+    && rm r-${R_VERSION}_1_amd64.deb
+
+# Install Python
+ARG PYTHON_VERSION=3.11.1
+RUN curl -O https://cdn.rstudio.com/python/ubuntu-2204/pkgs/python-${PYTHON_VERSION}_1_amd64.deb \
+    && gdebi -n python-${PYTHON_VERSION}_1_amd64.deb \
+    && rm python-${PYTHON_VERSION}_1_amd64.deb
+
+# Install starship
+RUN curl -sS https://starship.rs/install.sh -o starship_installer.sh \
+    && chmod +x starship_installer.sh \
+    && ./starship_installer.sh --yes \
+    && rm starship_installer.sh \
+    && rm -r /tmp/* \
+    && echo 'eval "$(starship init bash)"' >> /root/.bashrc
+
+# Install justfile
+RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/bin \
+    && echo 'PATH="$PATH:$HOME/bin"' >> /root/.bashrc 
+
+# Clean up
+RUN apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Configure
+COPY files/starship.toml /root/.config/starship.toml
+ENV PATH=/opt/python/"${PYTHON_VERSION}"/bin:/opt/R/"${R_VERSION}"/bin:$PATH
+RUN echo 'options(repos = c(REPO_NAME = "https://packagemanager.rstudio.com/cran/__linux__/jammy/latest"))' > /opt/R/${R_VERSION}/lib/R/etc/Rprofile.site
+
+CMD ["bash"]
