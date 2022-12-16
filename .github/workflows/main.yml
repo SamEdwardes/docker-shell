@@ -22,12 +22,13 @@ jobs:
 
         - name: Build and push
           id: docker_build
-          uses: docker/build-push-action@v2
+          uses: docker/build-push-action@v3
           with:
-            context: ./
-            file: ./Dockerfile.ubuntu2204
+            context: .
             push: true
+            file: Dockerfile.ubuntu2204
             tags: samedwardes/shell:latest
+            cache-to: type=gha,mode=max
 
         - name: Image digest
           run: echo ${{ steps.docker_build.outputs.digest }}

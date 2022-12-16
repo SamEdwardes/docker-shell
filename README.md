@@ -1,5 +1,8 @@
 # Docker Shell
 
+- Source code: <https://github.com/SamEdwardes/docker-shell>
+- Docker hub: <https://hub.docker.com/r/samedwardes/shell>
+
 A baseline docker image for a linux shell environment. Includes commonly used tools:
 
 - Python
