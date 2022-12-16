@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 LABEL author="Sam Edwardes"
-LABEL description="A base docker image for debugging."
+LABEL description="A baseline docker image for a linux shell environment."
 LABEL source="https://github.com/SamEdwardes/docker-shell"
 
 # Locale configuration d
