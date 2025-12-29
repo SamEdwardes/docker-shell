@@ -3,12 +3,14 @@ LABEL author="Sam Edwardes"
 LABEL description="A baseline docker image for a linux shell environment."
 LABEL source="https://github.com/SamEdwardes/docker-shell"
 
-# Locale configuration d
+# Locale configuration
 RUN apt-get update && apt-get install -y locales && localedef -i en_US -f UTF-8 en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ARG DEBIAN_FRONTEND=noninteractive
+# -- Should be one of "amd64" or "arm64"
+ARG DEB_ARCH="amd64"
 
 # Install linux packages
 RUN apt-get update --fix-missing && apt-get install -y \
